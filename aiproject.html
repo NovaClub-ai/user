@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore completed and ongoing projects by Nova Club.">
+  <title>AI Projects | Nova Club</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="club.css">
+
+  <style>
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 540px;
+  display: flex;
+  align-items: center;
+  padding: 7rem 0 5rem;
+  background: 
+    radial-gradient(circle at 78% 30%, rgba(37, 99, 235, 0.3), transparent 30%),
+    radial-gradient(circle at 18% 70%, rgba(147, 51, 234, 0.2), transparent 28%),
+    linear-gradient(135deg, #061827, #081321 62%, #11142c);
+}
+
+.hero-image {
+  width: min(100%, 420px);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  border-radius: 50%;
+  box-shadow: 0 0 80px rgba(37, 99, 235, 0.25);
+}
+    
+    .aiproject-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+      flex-shrink: 0;
+    }
+    .project-body {
+      padding: 1.4rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .aiproject-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 0.5rem 0;
+    }
+    .aiproject-card p {
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .status {
+      display: inline-block;
+      margin-bottom: .9rem;
+      padding: .33rem .7rem;
+      color: #9ff5ff;
+      background: rgba(34,211,238,.1);
+      border: 1px solid rgba(34,211,238,.2);
+      border-radius: 999px;
+      font-size: .74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+    .status.ongoing {
+      color: #e9c5ff;
+      background: rgba(147,51,234,.12);
+      border-color: rgba(192,132,252,.25);
+    }
+    .technology {
+      color: #74e7f5 !important;
+      font-size: .84rem;
+      font-weight: 600;
+      margin-top: auto !important;
+      padding-top: 0.5rem;
+    }
+    .cta {
+      padding: 3rem;
+      background: linear-gradient(120deg,rgba(37,99,235,.24),rgba(147,51,234,.2));
+      border: 1px solid rgba(34,211,238,.22);
+      border-radius: 24px;
+      margin-top: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    @media(max-width:930px){
+      .project-grid{
+        grid-template-columns:1fr 1fr
+      }
+      .cta{
+        flex-direction:column;
+        text-align:center
+      }
+    }
+    @media(max-width:500px){
+      .project-grid{
+        grid-template-columns:1fr
+      }
+      .hero{
+        min-height:auto;
+        padding:5rem 0 3rem
+      }
+      .section{
+        padding:3rem 0
+      }
+      .cta{
+        padding:1.5rem
+      }
+    }
+    .navbar .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      height: 2px;
+      width: 60%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #00d2ff, #9b00ff);
+      transition: transform 160ms ease;
+    }
+    .navbar .nav-link:hover::after,
+    .navbar .nav-link.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+      color: #fff !important;
+    }
+    .btn-join-nav:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 32px rgba(155, 0, 255, 0.32);
+      color: #fff !important;
+    }
+    @media (max-width: 991.98px) {
+      .navbar .navbar-collapse {
+        background: rgba(8, 3, 14, 0.98);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 8px;
+        border: 1px solid rgba(34, 211, 238, 0.1);
+      }
+      .navbar .nav-link::after {
+        display: none !important;
+      }
+      .btn-join-nav {
+        width: 100% !important;
+        justify-content: center !important;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body class="page-hero-reveal">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+
+  <div data-site-navbar></div>
+
+  <main id="main-content">
+    <header class="hero">
+      <div class="container">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;">
+          <div>
+            <span class="eyebrow">Explore · Build · Transform</span>
+            <h1><span class="gradient-text">AI Projects</span> built for tomorrow.</h1>
+            <p class="hero-copy">Discover how our members turn ideas into practical AI solutions—from smarter learning tools to safer digital experiences.</p>
+            <a class="button button-primary" href="#projects" >Explore projects
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+            </a>
+          </div>
+          <div class="text-center">
+            <img class="hero-image" src="images/brain2.jpg" alt="Digital illustration representing an artificial intelligence brain">
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" id="projects">
+      <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <span class="eyebrow">Member showcase</span>
+            <h2 class="section-title">Ideas in action</h2>
+            <p class="section-copy">Browse completed and ongoing projects created by club members.</p>
+          </div>
+          <div class="d-flex" aria-label="Project filters">
+            <button class="filter-btn active" type="button" data-filter="all">All</button>
+            <button class="filter-btn" type="button" data-filter="completed">Completed</button>
+            <button class="filter-btn" type="button" data-filter="ongoing">Ongoing</button>
+          </div>
+        </div>
+
+        <div class="project-grid">
+          <div class="project-item" data-status="completed">
+            <article class="aiproject-card">
+              <img src="images/stock.jpg" alt="Stock Predictions" loading="lazy">
+              <div class="project-body">
+                <span class="status">Completed</span>
+                <h3>Stock Price Prediction</h3>
+                <p>Predicts future stock prices based on historical data and market trends.</p>
+                <p class="technology mb-0">NLP · Machine Learning · CNN</p>
+              </div>
+            </article>
+          </div>
+          <div class="project-item" data-status="completed">
+            <article class="aiproject-card">
+              <img src="images/plant.jpg" alt="Plant monitored by smart sensors" loading="lazy">
+              <div class="project-body">
+                <span class="status">Completed</span>
+                <h3>Smart Plant Monitor</h3>
+                <p>Monitors plant health and predicts nutrient deficiencies using connected sensors and AI.</p>
+                <p class="technology mb-0">Python · TensorFlow · IoT</p>
+              </div>
+            </article>
+          </div>
+          <div class="project-item" data-status="completed">
+            <article class="aiproject-card">
+              <img src="images/music.jpg" alt="Headphones and music interface" loading="lazy">
+              <div class="project-body">
+                <span class="status">Completed</span>
+                <h3>Music Genre Classifier</h3>
+                <p>Classifies songs into genres by identifying patterns in their audio features.</p>
+                <p class="technology mb-0">Python · Librosa · Scikit-learn</p>
+              </div>
+            </article>
+          </div>
+          <div class="project-item" data-status="completed">
+            <article class="aiproject-card">
+              <img src="images/study.jpg" alt="Student using a digital study assistant" loading="lazy">
+              <div class="project-body">
+                <span class="status">Completed</span>
+                <h3>AI Study Buddy</h3>
+                <p>Provides study support and adapts recommendations to individual learning needs.</p>
+                <p class="technology mb-0">JavaScript · NLP · Web API</p>
+              </div>
+            </article>
+          </div>
+          <div class="project-item" data-status="ongoing">
+            <article class="aiproject-card">
+              <img src="images/scam.jpg" alt="Cybersecurity warning on a screen" loading="lazy">
+              <div class="project-body">
+                <span class="status ongoing">Ongoing</span>
+                <h3>Phishing Detector</h3>
+                <p>Detects and warns users about potentially fraudulent websites using machine learning.</p>
+                <p class="technology mb-0">NLP · Classification · Security</p>
+              </div>
+            </article>
+          </div>
+          <div class="project-item" data-status="ongoing">
+            <article class="aiproject-card">
+              <img src="images/write.jpg" alt="Handwriting on paper" loading="lazy">
+              <div class="project-body">
+                <span class="status ongoing">Ongoing</span>
+                <h3>Handwriting Recognition</h3>
+                <p>Recognises handwriting and converts it into editable digital text.</p>
+                <p class="technology mb-0">Computer Vision · CNN · OpenCV</p>
+              </div>
+            </article>
+          </div>
+          <div class="project-item" data-status="ongoing">
+            <article class="aiproject-card">
+              <img src="images/news.jpg" alt="Newspaper representing online news" loading="lazy">
+              <div class="project-body">
+                <span class="status ongoing">Ongoing</span>
+                <h3>Fake News Detector</h3>
+                <p>Analyses article text and headlines to identify signals associated with misinformation.</p>
+                <p class="technology mb-0">NLP · Python · Classification</p>
+              </div>
+            </article>
+          </div>
+          <div class="project-item" data-status="ongoing">
+            <article class="aiproject-card">
+              <img src="images/crop.jpg" alt="Crop field" loading="lazy">
+              <div class="project-body">
+                <span class="status ongoing">Ongoing</span>
+                <h3>Smart Crop Monitoring System</h3>
+                <p>Tracks soil health, crop growth, and predicts optimal harvest times using real-time sensor data.</p>
+                <p class="technology mb-0">Computer Vision · Python · Deep Learning</p>
+              </div>
+            </article>
+          </div>
+          <div class="project-item" data-status="ongoing">
+            <article class="aiproject-card">
+              <img src="images/car.jpg" alt="Car" loading="lazy">
+              <div class="project-body">
+                <span class="status ongoing">Ongoing</span>
+                <h3>Self-Driving Navigation System</h3>
+                <p>Computer vision system that enables autonomous vehicles to detect obstacles and navigate safely.</p>
+                <p class="technology mb-0">CNN · LiDAR · ROS</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="cta">
+          <div>
+            <span class="eyebrow">Your idea could be next</span>
+            <h2 class="section-title" style="font-size:clamp(1.5rem,2.8vw,2.5rem);">Build something meaningful with us.</h2>
+            <p class="section-copy">Join a project team and transform an idea into a working prototype.</p>
+          </div>
+          <a class="button button-primary" href="join.html#registration">Join Us Now
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="club.js"></script>
+</body>
+</html>
