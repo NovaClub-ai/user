@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Photos, project demonstrations, and videos from Nova Club.">
+  <title>Gallery | Nova Club</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="club.css">
+
+  <style>
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 9rem 0 5rem;
+  text-align: center;
+  background: 
+    radial-gradient(circle at 50% 0, rgba(37, 99, 235, 0.38), transparent 38%),
+    linear-gradient(145deg, #061827, #0c1730);
+}
+
+.gallery-card {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 290px;
+  padding: 0;
+  text-align: left;
+  background: #0b263b;
+  border: 1px solid rgba(148, 190, 216, 0.15);
+  border-radius: 18px;
+  cursor: pointer;
+  border: none;
+  display: block;
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.gallery-card:hover img,
+.gallery-card:focus img {
+  transform: scale(1.07);
+}
+
+.gallery-overlay {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 3rem 1.25rem 1.25rem;
+  color: #fff;
+  background: linear-gradient(transparent, rgba(3, 14, 24, 0.96));
+}
+
+.gallery-overlay span {
+  color: #8cecf8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.gallery-overlay h3 {
+  margin: 0.35rem 0 0;
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.video-card {
+  overflow: hidden;
+  height: 100%;
+  background: rgba(10, 38, 59, 0.82);
+  border: 1px solid rgba(148, 190, 216, 0.15);
+  border-radius: 20px;
+}
+
+.video-card .ratio {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  background: #020b12;
+}
+
+.video-card .ratio iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-copy {
+  padding: 1.4rem;
+}
+
+.video-copy p {
+  color: var(--muted);
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  max-width: 800px;
+  width: 100%;
+  background: #071a2a;
+  border: 1px solid #29465b;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #29465b;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.modal-header p {
+  margin: 0.2rem 0 0;
+  color: #a9c0d0;
+  font-size: 0.9rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 0;
+}
+
+.modal-body img {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  background: #020b12;
+}
+
+.empty-state {
+  display: none;
+  padding: 3rem;
+  color: #a9c0d0;
+  text-align: center;
+  border: 1px dashed #355267;
+  border-radius: 18px;
+  margin-top: 1.5rem;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+@media (max-width: 930px) {
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .gallery-card {
+    height: 245px;
+  }
+  
+  .hero {
+    padding: 7.5rem 0 4rem;
+  }
+  
+  .section {
+    padding: 3rem 0;
+  }
+}
+
+    .navbar .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      height: 2px;
+      width: 60%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #00d2ff, #9b00ff);
+      transition: transform 160ms ease;
+    }
+    .navbar .nav-link:hover::after,
+    .navbar .nav-link.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+      color: #fff !important;
+    }
+    .btn-join-nav:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 32px rgba(155, 0, 255, 0.32);
+      color: #fff !important;
+    }
+    @media (max-width: 991.98px) {
+      .navbar .navbar-collapse {
+        background: rgba(8, 3, 14, 0.98);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 8px;
+        border: 1px solid rgba(34, 211, 238, 0.1);
+      }
+      .navbar .nav-link::after {
+        display: none !important;
+      }
+      .btn-join-nav {
+        width: 100% !important;
+        justify-content: center !important;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body class="page-hero-reveal">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+ 
+  <div data-site-navbar></div>
+
+  <main id="main-content">
+    <header class="hero">
+      <div class="container">
+        <span class="eyebrow">Club moments</span>
+        <h1>Where ideas become <span class="gradient-text">shared experiences.</span></h1>
+        <p>Explore highlights from workshops, competitions, project demonstrations, and activities organised by our community.</p>
+        <a class="button button-primary" href="#photoGallery">Explore Gallery
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+      </div>
+    </header>
+
+    <section class="section" id="photoGallery">
+      <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <span class="eyebrow">Photo collection</span>
+            <h2 class="section-title">Inside our community</h2>
+            <p class="section-copy">Select a category or click any photograph for a larger view. Your selected category is remembered during this visit.</p>
+          </div>
+          <div class="d-flex" aria-label="Gallery filters">
+            <button class="filter-btn active" type="button" data-filter="all">All</button>
+            <button class="filter-btn" type="button" data-filter="workshop">Workshops</button>
+            <button class="filter-btn" type="button" data-filter="competition">Competitions</button>
+            <button class="filter-btn" type="button" data-filter="project">Projects</button>
+            <button class="filter-btn" type="button" data-filter="activity">Activities</button>
+          </div>
+        </div>
+
+        <div class="gallery-grid">
+          <div class="gallery-item" data-category="workshop">
+            <button class="gallery-card" type="button" data-image="images/discussion2.jpg" data-title="Prompt Engineering Workshop" data-description="Members practise writing clear and effective prompts during a guided workshop.">
+              <img src="images/discussion2.jpg" alt="Students taking part in an AI workshop" loading="lazy">
+              <span class="gallery-overlay"><span>Workshop</span><h3>Prompt Engineering Workshop</h3></span>
+            </button>
+          </div>
+          <div class="gallery-item" data-category="competition">
+            <button class="gallery-card" type="button" data-image="images/present.jpg" data-title="Nova Challenge" data-description="Student teams present data-driven solutions to a judging panel.">
+              <img src="images/present.jpg" alt="Data visualisation used during a competition" loading="lazy">
+              <span class="gallery-overlay"><span>Competition</span><h3>AI Innovation Challenge</h3></span>
+            </button>
+          </div>
+          <div class="gallery-item" data-category="project">
+            <button class="gallery-card" type="button" data-image="images/plantmonitor.jpg" data-title="Smart Plant Monitor Demo" data-description="A member demonstrates an IoT and AI system for monitoring plant health.">
+              <img src="images/plantmonitor.jpg" alt="Smart plant monitoring demonstration" loading="lazy">
+              <span class="gallery-overlay"><span>Project demo</span><h3>Smart Plant Monitor</h3></span>
+            </button>
+          </div>
+          <div class="gallery-item" data-category="project">
+            <button class="gallery-card" type="button" data-image="images/discussion.jpg" data-title="Music Classifier Showcase" data-description="Members test an audio model that predicts the genre of a music sample.">
+              <img src="images/discussion.jpg" alt="Music classifier project showcase" loading="lazy">
+              <span class="gallery-overlay"><span>Project demo</span><h3>Music Classifier Showcase</h3></span>
+            </button>
+          </div>
+          <div class="gallery-item" data-category="workshop">
+            <button class="gallery-card" type="button" data-image="images/workshop.jpg" data-title="Computer Vision Lab" data-description="Participants explore image processing through a handwriting recognition exercise.">
+              <img src="images/workshop.jpg" alt="Handwriting recognition workshop material" loading="lazy">
+              <span class="gallery-overlay"><span>Workshop</span><h3>Computer Vision Lab</h3></span>
+            </button>
+          </div>
+          <div class="gallery-item" data-category="activity">
+            <button class="gallery-card" type="button" data-image="images/workshop2.jpg" data-title="AI Ethics Discussion" data-description="Club members discuss misinformation, responsible AI, and digital citizenship.">
+              <img src="images/workshop2.jpg" alt="News material used in an AI ethics discussion" loading="lazy">
+              <span class="gallery-overlay"><span>Club activity</span><h3>AI Ethics Discussion</h3></span>
+            </button>
+          </div>
+          <div class="gallery-item" data-category="competition">
+            <button class="gallery-card" type="button" data-image="images/pitch.jpg" data-title="Responsible AI Pitch" data-description="Teams pitch tools designed to encourage originality and responsible use of AI.">
+              <img src="images/pitch.jpg" alt="Document checking project presented in a competition" loading="lazy">
+              <span class="gallery-overlay"><span>Competition</span><h3>Responsible AI Pitch</h3></span>
+            </button>
+          </div>
+          <div class="gallery-item" data-category="activity">
+            <button class="gallery-card" type="button" data-image="images/share.jpg" data-title="Member Sharing Session" data-description="Members exchange ideas, project experiences, and future collaboration plans.">
+              <img src="images/share.jpg" alt="Artificial intelligence visual used during a sharing session" loading="lazy">
+              <span class="gallery-overlay"><span>Club activity</span><h3>Member Sharing Session</h3></span>
+            </button>
+          </div>
+        </div>
+        <div class="empty-state" role="status">No gallery items are available in this category.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow">Watch and learn</span>
+        <h2 class="section-title">Featured videos</h2>
+        <p class="section-copy">A visual introduction to neural networks and the ideas that inspire our project teams.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+          <div>
+            <article class="video-card">
+              <div class="ratio">
+                <iframe src="https://www.youtube.com/embed/aircAruvnKk" title="But what is a neural network?" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              </div>
+              <div class="video-copy">
+                <h3 style="font-size:1.2rem;font-weight:700;color:#fff;">Understanding Neural Networks</h3>
+                <p class="mb-0">A beginner-friendly visual guide that explains the concept of Nueral Network.</p>
+              </div>
+            </article>
+          </div>
+          <div>
+            <div class="video-card" style="padding:1.5rem;display:flex;flex-direction:column;justify-content:center;height:100%;">
+              <span class="eyebrow">Share your work</span>
+              <h2 style="font-size:clamp(1.5rem,2.8vw,2.5rem);font-weight:800;letter-spacing:-.035em;color:#fff;margin-top:0.5rem;">Have a project video?</h2>
+              <p style="color:#a9c0d0;line-height:1.75;">Submit your demo to the committee and inspire other students to start building.</p>
+              <a class="button button-primary" href="join.html#contact">Contact the Club
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+            </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  <div class="modal-overlay" id="galleryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 id="modalTitle">Gallery image</h2>
+          <p id="modalDescription"></p>
+        </div>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <img id="modalImage" src="" alt="">
+      </div>
+    </div>
+  </div>
+
+  <div data-site-footer></div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="club.js"></script>
+</body>
+</html>

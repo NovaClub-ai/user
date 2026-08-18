@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Nova Club - learn, build and create practical AI solutions together.">
+  <title>Nova Club | Home</title>
+  
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="club.css">
+
+  <style>
+
+    .navbar .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      height: 2px;
+      width: 60%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #00d2ff, #9b00ff);
+      transition: transform 160ms ease;
+    }
+    .navbar .nav-link:hover::after,
+    .navbar .nav-link.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+      color: #fff !important;
+    }
+    .btn-join-nav:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 32px rgba(155, 0, 255, 0.32);
+      color: #fff !important;
+    }
+    @media (max-width: 991.98px) {
+      .navbar .navbar-collapse {
+        background: rgba(8, 3, 14, 0.98);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 8px;
+        border: 1px solid rgba(34, 211, 238, 0.1);
+      }
+      .navbar .nav-link::after {
+        display: none !important;
+      }
+      .btn-join-nav {
+        width: 100% !important;
+        justify-content: center !important;
+        margin-top: 4px;
+      }
+    }
+    .notice-bar {
+      margin-top: 76px;
+    }
+  </style>
+</head>
+<body class="home-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+ 
+  <div data-site-navbar></div>
+
+
+  <div class="notice-bar" data-site-notice>
+    <span><strong>Fresh idea:</strong> Every great AI project starts with a curious question. Bring yours to our next workshop.</span>
+    <button class="notice-dismiss" type="button" aria-label="Dismiss message" data-dismiss-site-notice>&times;</button>
+  </div>
+
+  <main id="main-content">
+    <section class="home-hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Welcome, future builder.</p>
+        <h1 id="hero-title">Think boldly.<br><span class="gradient-text">Build intelligently.</span></h1>
+        <p class="hero-summary">We are a student community turning curiosity into useful AI, machine learning and digital innovation projects - one experiment at a time.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#workshop">Explore the next workshop
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+        </div>
+        <ul class="hero-metrics" aria-label="Club highlights">
+          <li><strong>Hands-on</strong><span>learn by making</span></li>
+          <li><strong>Beginner-friendly</strong><span>grow at your pace</span></li>
+          <li><strong>Future-focused</strong><span>build with purpose</span></li>
+        </ul>
+      </div>
+      <div class="hero-visual" aria-label="Glowing neural network illustration">
+        <div class="signal-ring" aria-hidden="true"></div>
+        <div class="hero-image-frame"><img src="images/brain2.jpg" alt="Glowing blue AI brain with circuit connections"></div>
+        <div class="floating-chip chip-one"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1"></rect><path d="M9 1v4m3-4v4m3-4v4M9 19v4m3-4v4m3-4v4M1 9h4m-4 3h4m-4 3h4m14-6h4m-4 3h4m-4 3h4"></path></svg>Machine learning</div>
+        <div class="floating-chip chip-two"><span class="chip-dot" aria-hidden="true"></span>Ideas in progress</div>
+      </div>
+    </section>
+
+    <section class="section" id="welcome" aria-labelledby="welcome-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Welcome to the club</p>
+          <h2 id="welcome-title">A launchpad for thoughtful technology.</h2>
+        </div>
+        <a class="section-link" href="about_us.html">Meet our mission
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </a>
+      </div>
+      <div class="intro-grid">
+        <article class="intro-panel">
+          <h3>Learn the ideas. Test the possibilities. Share what works.</h3>
+          <p>Nova Club brings together students who want to understand intelligent technology and use it responsibly. From a first Python notebook to a polished prototype, we make room for exploration, collaboration and practical impact.</p>
+          <div class="pill-row" aria-label="Club interests"><span class="pill">Artificial Intelligence</span><span class="pill">Machine Learning</span><span class="pill">Prompt Engineering</span><span class="pill">Innovation Challenges</span></div>
+        </article>
+        <aside class="glance-panel" aria-label="TensorFlow public repository">
+          <h3>TensorFlow public repository</h3>
+          <div class="stats-grid">
+            <div><strong>10+</strong><span>project concepts explored</span></div>
+            <div><strong>All levels</strong><span>experience is welcome</span></div>
+            <div><strong data-github-stars>...</strong><span>TensorFlow GitHub stars</span></div>
+            <div><strong data-github-updated>...</strong><span>latest open-source pulse</span></div>
+          </div>
+          <p class="card-meta" data-api-status aria-live="polite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Checking live open-source data...
+          </p>
+          <a class="api-source-link" href="https://github.com/tensorflow/tensorflow" target="_blank" rel="noopener noreferrer">View TensorFlow on GitHub <span aria-hidden="true">→</span></a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section-deep" id="announcements" aria-labelledby="announcements-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Stay in the loop</p>
+          <h2 id="announcements-title">Latest announcements</h2>
+          <p>What is happening around our club this month.</p>
+        </div>
+      </div>
+      <div class="announcement-grid">
+        <article class="announcement-card"><span class="card-label">Challenge</span><h3>Innovation Sprint: Tech for Student Life</h3><p>Form a small team and pitch one practical idea that makes campus life easier, safer or more inclusive.</p><p class="card-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Idea submissions close 15 August</p></article>
+        <article class="announcement-card"><span class="card-label">Community</span><h3>Beginner Build Circle is now open</h3><p>Bring a laptop and a question. We will help you set up your first notebook, dataset and simple AI experiment.</p><p class="card-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg>New members welcome</p></article>
+        <article class="announcement-card"><span class="card-label">Showcase</span><h3>Project gallery is ready for new work</h3><p>Our members are refining AI Study Buddy, Smart Plant Monitor and other prototypes for the next sharing session.</p><p class="card-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V4.8A1.8 1.8 0 0 1 5.8 3H20v18H5.5A1.5 1.5 0 0 1 4 19.5Z"></path><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H20"></path></svg>Explore our AI projects</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="featured-project" aria-labelledby="project-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Featured AI project</p>
+          <h2 id="project-title">AI Study Buddy</h2>
+          <p>A friendly learning companion that shows how AI can support students without replacing their thinking.</p>
+        </div>
+        <a class="section-link" href="aiproject.html">View all projects
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </a>
+      </div>
+      <article class="project-card">
+        <div class="project-image"><img src="images/study.jpg" alt="Student studying with a laptop, representing an AI study assistant"></div>
+        <div class="project-copy">
+          <span class="card-label">In development</span>
+          <h3>Turning revision sessions into clearer next steps.</h3>
+          <p>This prototype uses conversational prompts and adaptive study suggestions to help learners organise topics, create practice questions and reflect on what they still need to learn.</p>
+          <ul class="project-tags" aria-label="Project technologies"><li>Natural language prompts</li><li>Learning design</li><li>Student wellbeing</li></ul>
+          <a class="section-link" href="aiproject.html">See the project collection
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <section class="section section-deep" id="workshop" aria-labelledby="workshop-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Upcoming workshop</p>
+          <h2 id="workshop-title">Make your prompts work harder.</h2>
+        </div>
+      </div>
+      <div class="workshop-panel">
+        <div class="date-card" aria-label="Workshop date: 20 August 2026"><span>August</span><strong>20</strong><small>Thursday, 2026</small></div>
+        <div class="workshop-content">
+          <h3>Prompt Engineering Studio: From Idea to Useful Output</h3>
+          <p>Learn a practical framework for writing, testing and improving prompts for study, research and creative experimentation. No prior AI experience is required.</p>
+          <ul class="workshop-details">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>2:30 PM - 4:30 PM</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 10-8 10S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2"></circle></svg>Innovation Lab 2</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21a9 9 0 1 0-9-9 9.75 9.75 0 0 0 .3 2.3L2 17l2.7-.3A9.75 9.75 0 0 0 12 21Z"></path></svg>Bring your laptop</li>
+          </ul>
+        </div>
+        <div class="workshop-action">
+          <button class="button button-primary" type="button" aria-label="Save workshop reminder" aria-pressed="false" data-workshop-save>Save workshop reminder</button>
+          <p class="status-message" role="status" aria-live="polite" data-workshop-status></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="club.js"></script>
+</body>
+</html>
