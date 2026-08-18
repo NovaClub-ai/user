@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Workshops, seminars, hackathons and events from Nova Club.">
+  <title>Workshops & Events | Nova Club</title>
+  
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="club.css">
+
+  <style>
+    .events-hero {
+      padding: 9rem 0 5rem;
+      text-align: center;
+      background: 
+        radial-gradient(circle at 50% 0, rgba(37, 99, 235, 0.38), transparent 38%),
+        linear-gradient(145deg, #061827, #0c1730);
+    }
+
+    .event-card .card-body {
+      padding: 1.5rem;
+    }
+
+    .event-tag {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tag-workshop {
+      background: rgba(34, 211, 238, 0.15);
+      color: #22d3ee;
+    }
+
+    .tag-seminar {
+      background: rgba(147, 51, 234, 0.15);
+      color: #c084fc;
+    }
+
+    .tag-hackathon {
+      background: rgba(37, 99, 235, 0.15);
+      color: #60a5fa;
+    }
+
+    .tag-challenge {
+      background: rgba(236, 72, 153, 0.15);
+      color: #f472b6;
+    }
+
+    .event-status {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-upcoming {
+      background: rgba(34, 211, 238, 0.15);
+      color: #22d3ee;
+    }
+
+    .status-ongoing {
+      background: rgba(74, 222, 128, 0.15);
+      color: #4ade80;
+    }
+
+    .status-ended {
+      background: rgba(148, 163, 184, 0.15);
+      color: #94a3b8;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 3rem;
+      color: var(--muted);
+      text-align: center;
+      border: 1px dashed #355267;
+      border-radius: 18px;
+      margin-top: 1.5rem;
+    }
+
+    .loading-state {
+      padding: 3rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .loading-state .spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(34, 211, 238, 0.1);
+      border-radius: 50%;
+      border-top-color: #22d3ee;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      text-align: center;
+    }
+
+    .calendar-grid .day-header {
+      padding: 0.5rem 0;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--cyan);
+      text-transform: uppercase;
+    }
+
+    .calendar-grid .day {
+      padding: 0.5rem 0;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: background 0.2s;
+    }
+
+    .calendar-grid .day:hover {
+      background: rgba(34, 211, 238, 0.1);
+    }
+
+    .calendar-grid .day.has-event {
+      background: rgba(34, 211, 238, 0.15);
+      color: var(--cyan);
+      cursor: pointer;
+    }
+
+    .calendar-grid .day.has-event::after {
+      content: "●";
+      display: block;
+      font-size: 0.4rem;
+      color: var(--cyan);
+      margin-top: -2px;
+    }
+
+    .calendar-grid .day.other-month {
+      color: rgba(169, 192, 208, 0.3);
+    }
+
+    .calendar-nav-btn {
+      color: var(--cyan);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .calendar-nav-btn:hover {
+      opacity: 0.7;
+    }
+
+    .event-count-badge {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--cyan);
+      margin-left: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .calendar-grid {
+        font-size: 0.75rem;
+      }
+      .calendar-grid .day {
+        padding: 0.3rem 0;
+      }
+      .event-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .events-hero {
+        padding: 7.5rem 0 4rem;
+      }
+      .section {
+        padding: 4rem 0;
+      }
+      .event-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+ 
+    .navbar .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      height: 2px;
+      width: 60%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #00d2ff, #9b00ff);
+      transition: transform 160ms ease;
+    }
+    .navbar .nav-link:hover::after,
+    .navbar .nav-link.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+      color: #fff !important;
+    }
+    .btn-join-nav:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 32px rgba(155, 0, 255, 0.32);
+      color: #fff !important;
+    }
+    @media (max-width: 991.98px) {
+      .navbar .navbar-collapse {
+        background: rgba(8, 3, 14, 0.98);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 8px;
+        border: 1px solid rgba(34, 211, 238, 0.1);
+      }
+      .navbar .nav-link::after {
+        display: none !important;
+      }
+      .btn-join-nav {
+        width: 100% !important;
+        justify-content: center !important;
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body class="page-hero-reveal">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <div data-site-navbar></div>
+
+  <main id="main-content">
+    <header class="events-hero">
+      <div class="container">
+        <span class="eyebrow">Workshops & Events</span>
+        <h1>Never miss an <span class="gradient-text">event</span></h1>
+        <p>Explore upcoming workshops, seminars, hackathons, and challenges organized by Nova Club.</p>
+      </div>
+    </header>
+
+    <section class="section" id="upcoming">
+      <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <span class="eyebrow">Activities</span>
+            <h2 class="section-title">All <span class="gradient-text">events</span></h2>
+            <p class="section-copy">Filter by event type or browse all activities from Nova Club.</p>
+          </div>
+          <div class="d-flex" aria-label="Event filters">
+            <button class="filter-btn active" type="button" data-filter="all">All</button>
+            <button class="filter-btn" type="button" data-filter="workshop">Workshops</button>
+            <button class="filter-btn" type="button" data-filter="seminar">Seminars</button>
+            <button class="filter-btn" type="button" data-filter="hackathon">Hackathons</button>
+            <button class="filter-btn" type="button" data-filter="challenge">Challenges</button>
+          </div>
+        </div>
+
+        <div id="eventGrid" class="event-grid">
+          <!-- Events will be loaded dynamically from Google Calendar -->
+        </div>
+        <div class="loading-state" id="loadingState">
+          <div class="spinner"></div>
+          <p style="margin-top: 1rem;">Loading events from Nova Club calendar...</p>
+        </div>
+        <div class="empty-state" id="emptyState" role="status">No events available in this category. Check back soon!</div>
+      </div>
+    </section>
+
+    <section class="section" id="calendar">
+      <div class="container">
+        <div style="max-width:650px;margin:0 auto;text-align:center;">
+          <span class="eyebrow">Plan Ahead</span>
+          <h2 class="section-title">Event <span class="gradient-text">Calendar</span></h2>
+        </div>
+        <div style="max-width:600px;margin:2rem auto;background:rgba(10,38,59,.6);border:1px solid rgba(148,190,216,.15);border-radius:18px;padding:1.5rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <button class="calendar-nav-btn" id="prevMonthBtn">‹ Prev</button>
+            <span style="color:#fff;font-size:1.2rem;font-weight:700;" id="calendarMonthYear">August 2026</span>
+            <button class="calendar-nav-btn" id="nextMonthBtn">Next ›</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <div class="day-header">Sun</div>
+            <div class="day-header">Mon</div>
+            <div class="day-header">Tue</div>
+            <div class="day-header">Wed</div>
+            <div class="day-header">Thu</div>
+            <div class="day-header">Fri</div>
+            <div class="day-header">Sat</div>
+          </div>
+          <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;font-size:.75rem;color:var(--muted);">
+            <span>● <span style="color:var(--cyan);">Event day</span></span>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:2rem;">
+          <a class="button button-primary" href="join.html#registration">Join Our Next Event
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="club.js"></script>
+
+  <script>
+    const CALENDAR_ID = 'adbd7d12499ab0c1f6208d6dc5f5f0c32332ca2dcc5f61b2bceff6f5f5a479b9@group.calendar.google.com';
+    const API_KEY = 'AIzaSyCllzLFZORVFsyMsREYBdI1fjHv4teG6U8';
+    const MAX_RESULTS = 50;
+    let cachedEvents = [];
+    let currentFilter = 'all';
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function getEventStatus(startDate, endDate) {
+      const now = new Date();
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      if (now > end) return 'ended';
+      if (now >= start && now <= end) return 'ongoing';
+      return 'upcoming';
+    }
+
+  
+    function getEventCategory(summary) {
+      const lower = summary.toLowerCase();
+      if (lower.includes('workshop')) return 'workshop';
+      if (lower.includes('seminar') || lower.includes('talk')) return 'seminar';
+      if (lower.includes('hackathon')) return 'hackathon';
+      if (lower.includes('challenge') || lower.includes('sprint')) return 'challenge';
+      return 'workshop';
+    }
+
+    function getTagStyles(category) {
+      const map = {
+        'workshop': 'tag-workshop',
+        'seminar': 'tag-seminar',
+        'hackathon': 'tag-hackathon',
+        'challenge': 'tag-challenge'
+      };
+      return map[category] || 'tag-workshop';
+    }
+
+    function getStatusStyles(status) {
+      const map = {
+        'upcoming': 'status-upcoming',
+        'ongoing': 'status-ongoing',
+        'ended': 'status-ended'
+      };
+      return map[status] || 'status-upcoming';
+    }
+
+    function fetchEvents() {
+      const now = new Date();
+      const timeMin = new Date(now.getFullYear(), now.getMonth() - 6, 1).toISOString();
+      const timeMax = new Date(now.getFullYear() + 1, now.getMonth() + 6, 1).toISOString();
+
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&maxResults=${MAX_RESULTS}&orderBy=startTime&singleEvents=true&timeMin=${timeMin}&timeMax=${timeMax}`;
+
+      return fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (!data.items) return [];
+          return data.items.filter(event => event.status !== 'cancelled');
+        });
+    }
+
+    function renderEvents(events) {
+      const grid = document.getElementById('eventGrid');
+      const loadingState = document.getElementById('loadingState');
+      const emptyState = document.getElementById('emptyState');
+
+      if (!events || events.length === 0) {
+        loadingState.style.display = 'none';
+        grid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      loadingState.style.display = 'none';
+      emptyState.style.display = 'none';
+
+      let filteredEvents = events;
+      if (currentFilter !== 'all') {
+        filteredEvents = events.filter(event => {
+          const category = getEventCategory(event.summary);
+          return category === currentFilter;
+        });
+      }
+
+      if (filteredEvents.length === 0) {
+        grid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      filteredEvents.sort((a, b) => {
+        const dateA = new Date(a.start?.dateTime || a.start?.date);
+        const dateB = new Date(b.start?.dateTime || b.start?.date);
+        return dateA - dateB;
+      });
+
+      let html = '';
+      filteredEvents.forEach(event => {
+        const start = event.start?.dateTime || event.start?.date;
+        const end = event.end?.dateTime || event.end?.date || start;
+        const summary = event.summary || 'Untitled Event';
+        const description = event.description || 'No description available.';
+        const location = event.location || 'Location TBD';
+        const category = getEventCategory(summary);
+        const status = getEventStatus(start, end);
+        const tagClass = getTagStyles(category);
+        const statusClass = getStatusStyles(status);
+        const displayDate = formatDate(start);
+
+        let timeDisplay = '';
+        if (event.start?.dateTime) {
+          const time = new Date(start);
+          timeDisplay = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        html += `
+          <div class="event-item" data-category="${category}">
+            <article class="event-card">
+              <div class="card-body">
+                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:.5rem;">
+                  <span class="event-tag ${tagClass}">${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                  <span class="event-status ${statusClass}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+                </div>
+                <h3 style="color:#fff;font-size:1.1rem;font-weight:700;margin:.5rem 0;">${summary}</h3>
+                <p style="color:var(--muted);font-size:.9rem;margin-bottom:.5rem;">${description.substring(0, 120)}${description.length > 120 ? '...' : ''}</p>
+                <div style="display:flex;gap:1rem;font-size:.8rem;color:var(--muted);margin:.5rem 0;flex-wrap:wrap;">
+                  <span>📅 ${displayDate}${timeDisplay ? ' at ' + timeDisplay : ''}</span>
+                  <span>📍 ${location}</span>
+                </div>
+                ${status !== 'ended' ? `
+                  <a class="button button-primary" href="join.html#registration">Register Now
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+                  </a>
+                ` : `
+                  <span style="color:var(--muted);font-size:.8rem;display:block;text-align:center;margin-top:.5rem;">✓ Event has ended</span>
+                `}
+              </div>
+            </article>
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    function buildCalendar(events, year, month) {
+      const grid = document.getElementById('calendarGrid');
+      const monthYearDisplay = document.getElementById('calendarMonthYear');
+      const headers = grid.querySelectorAll('.day-header');
+      grid.innerHTML = '';
+      headers.forEach(h => grid.appendChild(h));
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startDayOfWeek = firstDay.getDay();
+
+
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
+
+      const eventDates = new Set();
+      events.forEach(event => {
+        const start = event.start?.dateTime || event.start?.date;
+        if (start) {
+          const date = new Date(start);
+          if (date.getFullYear() === year && date.getMonth() === month) {
+            eventDates.add(date.getDate());
+          }
+        }
+      });
+
+      const prevMonthLastDay = new Date(year, month, 0).getDate();
+      for (let i = startDayOfWeek - 1; i >= 0; i--) {
+        const day = prevMonthLastDay - i;
+        const div = document.createElement('div');
+        div.className = 'day other-month';
+        div.textContent = day;
+        grid.appendChild(div);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const div = document.createElement('div');
+        div.className = 'day';
+        if (eventDates.has(day)) {
+          div.classList.add('has-event');
+          div.title = 'Event on this day';
+        }
+        div.textContent = day;
+        grid.appendChild(div);
+      }
+
+      const totalCells = startDayOfWeek + daysInMonth;
+      const remaining = (7 - (totalCells % 7)) % 7;
+      for (let day = 1; day <= remaining; day++) {
+        const div = document.createElement('div');
+        div.className = 'day other-month';
+        div.textContent = day;
+        grid.appendChild(div);
+      }
+    }
+
+
+    function initCalendar() {
+      const grid = document.getElementById('eventGrid');
+      const loadingState = document.getElementById('loadingState');
+      const emptyState = document.getElementById('emptyState');
+
+      loadingState.style.display = 'block';
+      emptyState.style.display = 'none';
+
+
+      fetchEvents()
+        .then(events => {
+          cachedEvents = events;
+  
+          const sortedEvents = [...events].sort((a, b) => {
+            const dateA = new Date(a.start?.dateTime || a.start?.date);
+            const dateB = new Date(b.start?.dateTime || b.start?.date);
+            return dateA - dateB;
+          });
+
+          renderEvents(sortedEvents);
+
+
+          const now = new Date();
+          buildCalendar(events, now.getFullYear(), now.getMonth());
+
+          window.currentCalendarYear = now.getFullYear();
+          window.currentCalendarMonth = now.getMonth();
+        })
+        .catch(error => {
+          console.error('Error fetching events:', error);
+          loadingState.style.display = 'none';
+          grid.innerHTML = `
+            <div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--muted);">
+              <p>⚠️ Unable to load events at this time.</p>
+              <p style="font-size:0.85rem;">Please check your calendar connection or try again later.</p>
+            </div>
+          `;
+        });
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const filter = this.dataset.filter;
+        currentFilter = filter;
+
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const sortedEvents = [...cachedEvents].sort((a, b) => {
+          const dateA = new Date(a.start?.dateTime || a.start?.date);
+          const dateB = new Date(b.start?.dateTime || b.start?.date);
+          return dateA - dateB;
+        });
+        renderEvents(sortedEvents);
+      });
+    });
+
+    document.getElementById('prevMonthBtn').addEventListener('click', function() {
+      if (window.currentCalendarMonth === undefined) return;
+      window.currentCalendarMonth--;
+      if (window.currentCalendarMonth < 0) {
+        window.currentCalendarMonth = 11;
+        window.currentCalendarYear--;
+      }
+      buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
+    });
+
+    document.getElementById('nextMonthBtn').addEventListener('click', function() {
+      if (window.currentCalendarMonth === undefined) return;
+      window.currentCalendarMonth++;
+      if (window.currentCalendarMonth > 11) {
+        window.currentCalendarMonth = 0;
+        window.currentCalendarYear++;
+      }
+      buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initCalendar();
+    });
+  </script>
+</body>
+</html>
