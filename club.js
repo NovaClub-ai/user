@@ -803,6 +803,343 @@ $(function() {
       refreshBookmarks();
     });
 
+    const MANUAL_EVENTS = [
+  {
+    summary: "Prompt Engineering Masterclass",
+    description: "Learn advanced techniques for crafting effective prompts in AI applications.",
+    location: "Lab 2",
+    start: "2026-08-20T09:00:00",
+    end: "2026-08-20T17:00:00",
+    category: "workshop",
+    status: "upcoming"
+  },
+  {
+    summary: "AI Ethics & Responsible Innovation",
+    description: "Discuss the ethical implications of AI and how to build responsible systems.",
+    location: "Auditorium",
+    start: "2026-08-25T10:00:00",
+    end: "2026-08-25T16:00:00",
+    category: "seminar",
+    status: "upcoming"
+  },
+  {
+    summary: "AI for Good Hackathon",
+    description: "Build AI solutions that address real-world social and environmental challenges.",
+    location: "Online + Lab",
+    start: "2026-09-05T09:00:00",
+    end: "2026-09-06T17:00:00",
+    category: "hackathon",
+    status: "upcoming"
+  },
+  {
+    summary: "Innovation Sprint: Smart Campus",
+    description: "Design a solution that makes campus life smarter, safer, or more sustainable. Team of 3-4",
+    location: "Deadline: Aug 30",
+    start: "2026-08-30T00:00:00",
+    end: "2026-08-30T23:59:00",
+    category: "challenge",
+    status: "ongoing"
+  },
+  {
+    summary: "Computer Vision with OpenCV",
+    description: "Hands-on session on image processing and object detection using OpenCV.",
+    location: "Lab 3",
+    start: "2026-09-10T09:00:00",
+    end: "2026-09-10T17:00:00",
+    category: "workshop",
+    status: "upcoming"
+  },
+  {
+    summary: "Future of AI in Healthcare",
+    description: "Industry experts discuss AI applications in medical diagnosis and treatment. Recording available soon.",
+    location: "Virtual",
+    start: "2026-08-05T10:00:00",
+    end: "2026-08-05T16:00:00",
+    category: "seminar",
+    status: "ended"
+  }
+];
+
+let cachedEvents = [];
+let currentFilter = 'all';
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function getEventStatus(event) {
+  if (event.status) return event.status;
+  
+  const now = new Date();
+  const start = new Date(event.start?.dateTime || event.start);
+  const end = new Date(event.end?.dateTime || event.end || start);
+
+  if (now > end) return 'ended';
+  if (now >= start && now <= end) return 'ongoing';
+  return 'upcoming';
+}
+
+function getEventCategory(summary) {
+  const lower = summary.toLowerCase();
+  if (lower.includes('workshop')) return 'workshop';
+  if (lower.includes('seminar') || lower.includes('talk')) return 'seminar';
+  if (lower.includes('hackathon')) return 'hackathon';
+  if (lower.includes('challenge') || lower.includes('sprint')) return 'challenge';
+  return 'workshop';
+}
+
+function getTagStyles(category) {
+  const map = {
+    'workshop': 'tag-workshop',
+    'seminar': 'tag-seminar',
+    'hackathon': 'tag-hackathon',
+    'challenge': 'tag-challenge'
+  };
+  return map[category] || 'tag-workshop';
+}
+
+function getStatusStyles(status) {
+  const map = {
+    'upcoming': 'status-upcoming',
+    'ongoing': 'status-ongoing',
+    'ended': 'status-ended'
+  };
+  return map[status] || 'status-upcoming';
+}
+
+function getManualEvents() {
+  return MANUAL_EVENTS.map(event => ({
+    summary: event.summary,
+    description: event.description,
+    location: event.location,
+    start: {
+      dateTime: event.start
+    },
+    end: {
+      dateTime: event.end
+    },
+    status: 'confirmed',
+    category: event.category || getEventCategory(event.summary),
+    manualStatus: event.status || null
+  }));
+}
+
+function renderEvents(events) {
+  const grid = document.getElementById('eventGrid');
+  const loadingState = document.getElementById('loadingState');
+  const emptyState = document.getElementById('emptyState');
+
+  loadingState.style.display = 'none';
+
+  if (!events || events.length === 0) {
+    grid.innerHTML = '';
+    emptyState.style.display = 'block';
+    return;
+  }
+
+  emptyState.style.display = 'none';
+
+  let filteredEvents = events;
+  if (currentFilter !== 'all') {
+    filteredEvents = events.filter(event => {
+      const category = event.category || getEventCategory(event.summary);
+      return category === currentFilter;
+    });
+  }
+
+  if (filteredEvents.length === 0) {
+    grid.innerHTML = '';
+    emptyState.style.display = 'block';
+    return;
+  }
+
+  filteredEvents.sort((a, b) => {
+    const dateA = new Date(a.start?.dateTime || a.start?.date);
+    const dateB = new Date(b.start?.dateTime || b.start?.date);
+    return dateA - dateB;
+  });
+
+  let html = '';
+  filteredEvents.forEach(event => {
+    const start = event.start?.dateTime || event.start?.date;
+    const end = event.end?.dateTime || event.end?.date || start;
+    const summary = event.summary || 'Untitled Event';
+    const description = event.description || 'No description available.';
+    const location = event.location || 'Location TBD';
+    const category = event.category || getEventCategory(summary);
+    const status = event.manualStatus || getEventStatus(event);
+    const tagClass = getTagStyles(category);
+    const statusClass = getStatusStyles(status);
+    const displayDate = formatDate(start);
+
+    let timeDisplay = '';
+    if (event.start?.dateTime) {
+      const time = new Date(start);
+      timeDisplay = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    html += `
+      <div class="event-item" data-category="${category}">
+        <article class="event-card">
+          <div class="card-body">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:.5rem;">
+              <span class="event-tag ${tagClass}">${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+              <span class="event-status ${statusClass}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+            </div>
+            <h3 style="color:#fff;font-size:1.1rem;font-weight:700;margin:.5rem 0;">${summary}</h3>
+            <p style="color:var(--muted);font-size:.9rem;margin-bottom:.5rem;">${description.substring(0, 120)}${description.length > 120 ? '...' : ''}</p>
+            <div style="display:flex;gap:1rem;font-size:.8rem;color:var(--muted);margin:.5rem 0;flex-wrap:wrap;">
+              <span>📅 ${displayDate}${timeDisplay ? ' at ' + timeDisplay : ''}</span>
+              <span>📍 ${location}</span>
+            </div>
+            ${status !== 'ended' ? `
+              <a class="button button-primary" href="join.html#registration">Register Now
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+              </a>
+            ` : `
+              <span style="color:var(--muted);font-size:.8rem;display:block;text-align:center;margin-top:.5rem;">✓ Event has ended</span>
+            `}
+          </div>
+        </article>
+      </div>
+    `;
+  });
+
+  grid.innerHTML = html;
+}
+
+function buildCalendar(events, year, month) {
+  const grid = document.getElementById('calendarGrid');
+  const monthYearDisplay = document.getElementById('calendarMonthYear');
+  const headers = grid.querySelectorAll('.day-header');
+  grid.innerHTML = '';
+  headers.forEach(h => grid.appendChild(h));
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  const startDayOfWeek = firstDay.getDay();
+
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
+
+  const eventDates = new Set();
+  events.forEach(event => {
+    const start = event.start?.dateTime || event.start?.date;
+    if (start) {
+      const date = new Date(start);
+      if (date.getFullYear() === year && date.getMonth() === month) {
+        eventDates.add(date.getDate());
+      }
+    }
+  });
+
+  const prevMonthLastDay = new Date(year, month, 0).getDate();
+  for (let i = startDayOfWeek - 1; i >= 0; i--) {
+    const day = prevMonthLastDay - i;
+    const div = document.createElement('div');
+    div.className = 'day other-month';
+    div.textContent = day;
+    grid.appendChild(div);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const div = document.createElement('div');
+    div.className = 'day';
+    if (eventDates.has(day)) {
+      div.classList.add('has-event');
+      div.title = 'Event on this day';
+    }
+    div.textContent = day;
+    grid.appendChild(div);
+  }
+
+  const totalCells = startDayOfWeek + daysInMonth;
+  const remaining = (7 - (totalCells % 7)) % 7;
+  for (let day = 1; day <= remaining; day++) {
+    const div = document.createElement('div');
+    div.className = 'day other-month';
+    div.textContent = day;
+    grid.appendChild(div);
+  }
+}
+
+function initCalendar() {
+  const grid = document.getElementById('eventGrid');
+  const loadingState = document.getElementById('loadingState');
+  const emptyState = document.getElementById('emptyState');
+
+  loadingState.style.display = 'block';
+  emptyState.style.display = 'none';
+
+  const events = getManualEvents();
+  cachedEvents = events;
+
+  const sortedEvents = [...events].sort((a, b) => {
+    const dateA = new Date(a.start?.dateTime || a.start?.date);
+    const dateB = new Date(b.start?.dateTime || b.start?.date);
+    return dateA - dateB;
+  });
+
+  renderEvents(sortedEvents);
+
+  const now = new Date();
+  buildCalendar(events, now.getFullYear(), now.getMonth());
+
+  window.currentCalendarYear = now.getFullYear();
+  window.currentCalendarMonth = now.getMonth();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    initCalendar();
+    setupEventListeners();
+  });
+} else {
+  initCalendar();
+  setupEventListeners();
+}
+
+function setupEventListeners() {
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const filter = this.dataset.filter;
+      currentFilter = filter;
+
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      const sortedEvents = [...cachedEvents].sort((a, b) => {
+        const dateA = new Date(a.start?.dateTime || a.start?.date);
+        const dateB = new Date(b.start?.dateTime || b.start?.date);
+        return dateA - dateB;
+      });
+      renderEvents(sortedEvents);
+    });
+  });
+
+  document.getElementById('prevMonthBtn').addEventListener('click', function() {
+    if (window.currentCalendarMonth === undefined) return;
+    window.currentCalendarMonth--;
+    if (window.currentCalendarMonth < 0) {
+      window.currentCalendarMonth = 11;
+      window.currentCalendarYear--;
+    }
+    buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
+  });
+
+  document.getElementById('nextMonthBtn').addEventListener('click', function() {
+    if (window.currentCalendarMonth === undefined) return;
+    window.currentCalendarMonth++;
+    if (window.currentCalendarMonth > 11) {
+      window.currentCalendarMonth = 0;
+      window.currentCalendarYear++;
+    }
+    buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
+  });
+}
+
 })();
 
 
