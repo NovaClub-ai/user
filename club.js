@@ -473,9 +473,9 @@
 
     window.addEventListener("resize", () => window.requestAnimationFrame(updateBottomOffset), { passive: true });
 
-    if (document.body.classList.contains("home-page") && !getCookieConsent()) {
-      show();
-    }
+    if (document.body.classList.contains("home-page")) {
+    show();
+  }
   };
 
   startCookieConsent();
@@ -680,33 +680,54 @@
     });
   });
 
+window.saveDraft = function() {
+  console.log("saveDraft called!");
+  const draft = {};
+  const fieldIds = ["fullName", "studentId", "course", "email", "yearOfStudy", "experience", "reason"];
+  const draftKey = "aiClubMembershipDraft";
+  
+  fieldIds.forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) draft[id] = el.value;
+  });
+  
+  draft.interests = Array.from(document.querySelectorAll('.interest:checked')).map(function(cb) {
+    return cb.value;
+  });
+  
+  try {
+    localStorage.setItem(draftKey, JSON.stringify(draft));
+    const verify = localStorage.getItem(draftKey);
+   
+    return true;
+  } catch (error) {
+    console.log("❌ Error saving draft:", error);
+    return false;
+  }
+};
+
 $(function() {
   if ($("#joinForm").length === 0) return;
   
+  console.log("Join form initialized!"); 
   const form = document.getElementById("joinForm");
   const draftKey = "aiClubMembershipDraft";
   const fieldIds = ["fullName", "studentId", "course", "email", "yearOfStudy", "experience", "reason"];
   const optionalStorage = window.aiclubOptionalStorage;
 
-  function saveDraft() {
-    const draft = {};
-    fieldIds.forEach(function(id) {
-      draft[id] = $("#" + id).val();
-    });
-    draft.interests = $(".interest:checked").map(function() {
-      return this.value;
-    }).get();
-    optionalStorage.setLocal(draftKey, JSON.stringify(draft));
-  }
-
   function loadDraft() {
     let draft = null;
     try {
-      draft = JSON.parse(optionalStorage.getLocal(draftKey) || "null");
+      const raw = optionalStorage.getLocal(draftKey);
+      console.log("Raw draft from storage:", raw);
+      draft = JSON.parse(raw || "null");
     } catch (error) {
+      console.log("Error loading draft:", error);
       draft = null;
     }
     if (!draft || typeof draft !== "object") return;
+    
+    console.log("Loading draft:", draft);
     fieldIds.forEach(function(id) {
       if (draft[id] !== undefined) {
         $("#" + id).val(draft[id]);
@@ -720,22 +741,21 @@ $(function() {
     $("#characterCount").text($("#reason").val().length);
   }
 
-  function resetForm() {
+  $(form).on("input change", "input, select, textarea", function() {
+    window.saveDraft();
+    $("#characterCount").text($("#reason").val().length);
+  });
+
+  window.resetJoinForm = function() {
     form.reset();
     form.classList.remove("was-validated");
     $("#interestError").hide();
     $("#characterCount").text("0");
     optionalStorage.removeLocal(draftKey);
-  }
+    console.log("Form reset, draft cleared");
+  };
 
-  loadDraft();
-
-  $(form).on("input change", "input, select, textarea", function() {
-    saveDraft();
-    $("#characterCount").text($("#reason").val().length);
-  });
-
-  $("#clearDraft").on("click", resetForm);
+  $("#clearDraft").on("click", window.resetJoinForm);
 
   $(form).on("submit", function(event) {
     event.preventDefault();
@@ -744,7 +764,7 @@ $(function() {
     form.classList.add("was-validated");
     if (!form.checkValidity() || !hasInterest) return;
     var memberName = $("#fullName").val();
-    resetForm();
+    window.resetJoinForm();
     $("#successMessage").html("<strong>Registration received, " + $("<div>").text(memberName).html() + "!</strong> Thank you for your interest. The committee will contact you soon.").addClass("show");
     $("#successMessage")[0].scrollIntoView({ behavior: "smooth", block: "center" });
   });
@@ -760,6 +780,8 @@ $(function() {
       $(this).addClass("active").attr("aria-expanded", "true");
     }
   });
+
+  loadDraft();
 });
 
   $(function() {
@@ -1070,6 +1092,10 @@ function initCalendar() {
   const loadingState = document.getElementById('loadingState');
   const emptyState = document.getElementById('emptyState');
 
+  if (!grid || !loadingState || !emptyState) {
+    return;
+  }
+
   loadingState.style.display = 'block';
   emptyState.style.display = 'none';
 
@@ -1102,42 +1128,51 @@ if (document.readyState === 'loading') {
 }
 
 function setupEventListeners() {
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const filter = this.dataset.filter;
-      currentFilter = filter;
-
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-
-      const sortedEvents = [...cachedEvents].sort((a, b) => {
-        const dateA = new Date(a.start?.dateTime || a.start?.date);
-        const dateB = new Date(b.start?.dateTime || b.start?.date);
-        return dateA - dateB;
+  
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  if (filterBtns.length > 0) {
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const filter = this.dataset.filter;
+        currentFilter = filter;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const sortedEvents = [...cachedEvents].sort((a, b) => {
+          const dateA = new Date(a.start?.dateTime || a.start?.date);
+          const dateB = new Date(b.start?.dateTime || b.start?.date);
+          return dateA - dateB;
+        });
+        renderEvents(sortedEvents);
       });
-      renderEvents(sortedEvents);
     });
-  });
+  }
 
-  document.getElementById('prevMonthBtn').addEventListener('click', function() {
-    if (window.currentCalendarMonth === undefined) return;
-    window.currentCalendarMonth--;
-    if (window.currentCalendarMonth < 0) {
-      window.currentCalendarMonth = 11;
-      window.currentCalendarYear--;
-    }
-    buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
-  });
+  const prevBtn = document.getElementById('prevMonthBtn');
+  const nextBtn = document.getElementById('nextMonthBtn');
+  
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function() {
+      if (window.currentCalendarMonth === undefined) return;
+      window.currentCalendarMonth--;
+      if (window.currentCalendarMonth < 0) {
+        window.currentCalendarMonth = 11;
+        window.currentCalendarYear--;
+      }
+      buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
+    });
+  }
 
-  document.getElementById('nextMonthBtn').addEventListener('click', function() {
-    if (window.currentCalendarMonth === undefined) return;
-    window.currentCalendarMonth++;
-    if (window.currentCalendarMonth > 11) {
-      window.currentCalendarMonth = 0;
-      window.currentCalendarYear++;
-    }
-    buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
-  });
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function() {
+      if (window.currentCalendarMonth === undefined) return;
+      window.currentCalendarMonth++;
+      if (window.currentCalendarMonth > 11) {
+        window.currentCalendarMonth = 0;
+        window.currentCalendarYear++;
+      }
+      buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
+    });
+  }
 }
 
 })();
