@@ -473,9 +473,9 @@
 
     window.addEventListener("resize", () => window.requestAnimationFrame(updateBottomOffset), { passive: true });
 
-    if (document.body.classList.contains("home-page")) {
-    show();
-  }
+    if (document.body.classList.contains("home-page") && !getCookieConsent()) {
+      show();
+    }
   };
 
   startCookieConsent();
@@ -680,54 +680,33 @@
     });
   });
 
-window.saveDraft = function() {
-  console.log("saveDraft called!");
-  const draft = {};
-  const fieldIds = ["fullName", "studentId", "course", "email", "yearOfStudy", "experience", "reason"];
-  const draftKey = "aiClubMembershipDraft";
-  
-  fieldIds.forEach(function(id) {
-    const el = document.getElementById(id);
-    if (el) draft[id] = el.value;
-  });
-  
-  draft.interests = Array.from(document.querySelectorAll('.interest:checked')).map(function(cb) {
-    return cb.value;
-  });
-  
-  try {
-    localStorage.setItem(draftKey, JSON.stringify(draft));
-    const verify = localStorage.getItem(draftKey);
-   
-    return true;
-  } catch (error) {
-    console.log("❌ Error saving draft:", error);
-    return false;
-  }
-};
-
 $(function() {
   if ($("#joinForm").length === 0) return;
   
-  console.log("Join form initialized!"); 
   const form = document.getElementById("joinForm");
   const draftKey = "aiClubMembershipDraft";
   const fieldIds = ["fullName", "studentId", "course", "email", "yearOfStudy", "experience", "reason"];
   const optionalStorage = window.aiclubOptionalStorage;
 
+  function saveDraft() {
+    const draft = {};
+    fieldIds.forEach(function(id) {
+      draft[id] = $("#" + id).val();
+    });
+    draft.interests = $(".interest:checked").map(function() {
+      return this.value;
+    }).get();
+    optionalStorage.setLocal(draftKey, JSON.stringify(draft));
+  }
+
   function loadDraft() {
     let draft = null;
     try {
-      const raw = optionalStorage.getLocal(draftKey);
-      console.log("Raw draft from storage:", raw);
-      draft = JSON.parse(raw || "null");
+      draft = JSON.parse(optionalStorage.getLocal(draftKey) || "null");
     } catch (error) {
-      console.log("Error loading draft:", error);
       draft = null;
     }
     if (!draft || typeof draft !== "object") return;
-    
-    console.log("Loading draft:", draft);
     fieldIds.forEach(function(id) {
       if (draft[id] !== undefined) {
         $("#" + id).val(draft[id]);
@@ -741,21 +720,22 @@ $(function() {
     $("#characterCount").text($("#reason").val().length);
   }
 
-  $(form).on("input change", "input, select, textarea", function() {
-    window.saveDraft();
-    $("#characterCount").text($("#reason").val().length);
-  });
-
-  window.resetJoinForm = function() {
+  function resetForm() {
     form.reset();
     form.classList.remove("was-validated");
     $("#interestError").hide();
     $("#characterCount").text("0");
     optionalStorage.removeLocal(draftKey);
-    console.log("Form reset, draft cleared");
-  };
+  }
 
-  $("#clearDraft").on("click", window.resetJoinForm);
+  loadDraft();
+
+  $(form).on("input change", "input, select, textarea", function() {
+    saveDraft();
+    $("#characterCount").text($("#reason").val().length);
+  });
+
+  $("#clearDraft").on("click", resetForm);
 
   $(form).on("submit", function(event) {
     event.preventDefault();
@@ -764,7 +744,7 @@ $(function() {
     form.classList.add("was-validated");
     if (!form.checkValidity() || !hasInterest) return;
     var memberName = $("#fullName").val();
-    window.resetJoinForm();
+    resetForm();
     $("#successMessage").html("<strong>Registration received, " + $("<div>").text(memberName).html() + "!</strong> Thank you for your interest. The committee will contact you soon.").addClass("show");
     $("#successMessage")[0].scrollIntoView({ behavior: "smooth", block: "center" });
   });
@@ -780,8 +760,6 @@ $(function() {
       $(this).addClass("active").attr("aria-expanded", "true");
     }
   });
-
-  loadDraft();
 });
 
   $(function() {
@@ -827,6 +805,15 @@ $(function() {
 
     const MANUAL_EVENTS = [
   {
+    summary: "Future of AI in Healthcare",
+    description: "Industry experts discuss AI applications in medical diagnosis and treatment. Recording available soon.",
+    location: "Virtual",
+    start: "2026-08-05T10:00:00",
+    end: "2026-08-05T16:00:00",
+    category: "seminar",
+    status: "ended"
+  },
+  {
     summary: "Prompt Engineering Masterclass",
     description: "Learn advanced techniques for crafting effective prompts in AI applications.",
     location: "Lab 2",
@@ -845,15 +832,6 @@ $(function() {
     status: "upcoming"
   },
   {
-    summary: "AI for Good Hackathon",
-    description: "Build AI solutions that address real-world social and environmental challenges.",
-    location: "Online + Lab",
-    start: "2026-09-05T09:00:00",
-    end: "2026-09-06T17:00:00",
-    category: "hackathon",
-    status: "upcoming"
-  },
-  {
     summary: "Innovation Sprint: Smart Campus",
     description: "Design a solution that makes campus life smarter, safer, or more sustainable. Team of 3-4",
     location: "Deadline: Aug 30",
@@ -863,6 +841,15 @@ $(function() {
     status: "ongoing"
   },
   {
+    summary: "AI for Good Hackathon",
+    description: "Build AI solutions that address real-world social and environmental challenges.",
+    location: "Online + Lab",
+    start: "2026-09-05T09:00:00",
+    end: "2026-09-06T17:00:00",
+    category: "hackathon",
+    status: "upcoming"
+  },
+  {
     summary: "Computer Vision with OpenCV",
     description: "Hands-on session on image processing and object detection using OpenCV.",
     location: "Lab 3",
@@ -870,15 +857,6 @@ $(function() {
     end: "2026-09-10T17:00:00",
     category: "workshop",
     status: "upcoming"
-  },
-  {
-    summary: "Future of AI in Healthcare",
-    description: "Industry experts discuss AI applications in medical diagnosis and treatment. Recording available soon.",
-    location: "Virtual",
-    start: "2026-08-05T10:00:00",
-    end: "2026-08-05T16:00:00",
-    category: "seminar",
-    status: "ended"
   }
 ];
 
@@ -1034,9 +1012,22 @@ function renderEvents(events) {
 function buildCalendar(events, year, month) {
   const grid = document.getElementById('calendarGrid');
   const monthYearDisplay = document.getElementById('calendarMonthYear');
-  const headers = grid.querySelectorAll('.day-header');
-  grid.innerHTML = '';
-  headers.forEach(h => grid.appendChild(h));
+  
+  if (!grid || !monthYearDisplay) {
+    return;
+  }
+
+  while (grid.firstChild) {
+    grid.removeChild(grid.firstChild);
+  }
+
+  const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  dayHeaders.forEach(day => {
+    const div = document.createElement('div');
+    div.className = 'day-header';
+    div.textContent = day;
+    grid.appendChild(div);
+  });
 
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
@@ -1111,10 +1102,10 @@ function initCalendar() {
   renderEvents(sortedEvents);
 
   const now = new Date();
-  buildCalendar(events, now.getFullYear(), now.getMonth());
-
   window.currentCalendarYear = now.getFullYear();
   window.currentCalendarMonth = now.getMonth();
+  
+  buildCalendar(events, window.currentCalendarYear, window.currentCalendarMonth);
 }
 
 if (document.readyState === 'loading') {
@@ -1128,7 +1119,6 @@ if (document.readyState === 'loading') {
 }
 
 function setupEventListeners() {
-  
   const filterBtns = document.querySelectorAll('.filter-btn');
   if (filterBtns.length > 0) {
     filterBtns.forEach(btn => {
@@ -1148,10 +1138,9 @@ function setupEventListeners() {
   }
 
   const prevBtn = document.getElementById('prevMonthBtn');
-  const nextBtn = document.getElementById('nextMonthBtn');
-  
   if (prevBtn) {
-    prevBtn.addEventListener('click', function() {
+    prevBtn.removeEventListener('click', prevBtn._listener);
+    prevBtn._listener = function() {
       if (window.currentCalendarMonth === undefined) return;
       window.currentCalendarMonth--;
       if (window.currentCalendarMonth < 0) {
@@ -1159,11 +1148,14 @@ function setupEventListeners() {
         window.currentCalendarYear--;
       }
       buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
-    });
+    };
+    prevBtn.addEventListener('click', prevBtn._listener);
   }
 
+  const nextBtn = document.getElementById('nextMonthBtn');
   if (nextBtn) {
-    nextBtn.addEventListener('click', function() {
+    nextBtn.removeEventListener('click', nextBtn._listener);
+    nextBtn._listener = function() {
       if (window.currentCalendarMonth === undefined) return;
       window.currentCalendarMonth++;
       if (window.currentCalendarMonth > 11) {
@@ -1171,7 +1163,21 @@ function setupEventListeners() {
         window.currentCalendarYear++;
       }
       buildCalendar(cachedEvents, window.currentCalendarYear, window.currentCalendarMonth);
-    });
+    };
+    nextBtn.addEventListener('click', nextBtn._listener);
+  }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('eventGrid')) {
+      initCalendar();
+      setupEventListeners();
+    }
+  });
+} else {
+  if (document.getElementById('eventGrid')) {
+    initCalendar();
+    setupEventListeners();
   }
 }
 
